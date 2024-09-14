@@ -22,32 +22,29 @@ void setup() {
 
 void loop() {
   if (Serial.available() > 0) {
-    char receivedChar = Serial.read();
+    dataString = Serial.readStringUntil('\n');
     
-    if (receivedChar != '\n') {
-      dataString += receivedChar;
-    } 
-    else {
-      int index = 0;
-      int row = 0, col = 0;
-      while ((index = dataString.indexOf(',')) != -1) {
-        binaryMatrix[row][col] = dataString.substring(0, index).toInt();
-        dataString = dataString.substring(index + 1);
-        
-        col++;
-        if (col == 4) {
-          col = 0;
-          row++;
-        }
+    int index = 0;
+    int row = 0, col = 0;
+
+    while ((index = dataString.indexOf(',')) != -1) {
+      binaryMatrix[row][col] = dataString.substring(0, index).toInt();
+      dataString = dataString.substring(index + 1);
+
+      col++;
+      if (col == 4) {
+        col = 0;
+        row++;
       }
+    }
 
-      binaryMatrix[row][col] = dataString.toInt();
-
-      dataString = "";
+    binaryMatrix[row][col] = dataString.toInt();
+    
+    dataString = "";
 
       for (int i = 0; i < 4; i++) {
         for (int j = 0; j < 4; j++) {
-          if(binaryMatrix[i][j]=='1'){
+          if(binaryMatrix[i][j]==1){
             digitalWrite(led[i][j], HIGH);
           }
           else{
